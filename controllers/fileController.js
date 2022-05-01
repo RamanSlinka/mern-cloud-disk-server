@@ -50,8 +50,8 @@ class FileController {
             }
             user.usedSpace = user.usedSpace + file.size
 
-            let path ;
-            if(parent) {
+            let path;
+            if (parent) {
                 path = `${config.get('filePath')}\\${user._id}\\${parent.path}\\${file.name}`
             } else {
                 path = `${config.get('filePath')}\\${user._id}\\${file.name}`
@@ -65,7 +65,7 @@ class FileController {
 
 
             const type = file.name.split('.').pop()
-            const dbFile = new File ({
+            const dbFile = new File({
                 name: file.name,
                 type,
                 size: file.size,
@@ -82,7 +82,20 @@ class FileController {
         } catch (e) {
             return res.status(500).json({message: "UpLoad Error"})
         }
+    }
 
+    async downloadFile(req, res) {
+        try {
+            const file = await File.findOne({_id: req.query.id, user: req.user.id})
+            const path = config.get('filePath') + '\\' + req.user.id + '\\' + file.path + '\\' + file.name
+            if (fs.existsSync(path)) {
+                return res.download(path, file.name)
+            }
+            return res.status(400).json({message: "Download error"})
+        } catch (e) {
+            console.log(e)
+            res.status(500).json({message: "Download error"})
+        }
     }
 }
 
