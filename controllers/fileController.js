@@ -35,20 +35,18 @@ class FileController {
             let files
             switch (sort) {
                 case 'name':
-                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({name:1})
+                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({name: 1})
                     break
                 case 'type':
-                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({type:1})
+                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({type: 1})
                     break
                 case 'date':
-                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({date:1})
+                    files = await File.find({user: req.user.id, parent: req.query.parent}).sort({date: 1})
                     break
                 default:
                     files = await File.find({user: req.user.id, parent: req.query.parent})
                     break;
             }
-
-
             return res.json(files)
         } catch (e) {
             console.log(e)
@@ -84,7 +82,7 @@ class FileController {
             const type = file.name.split('.').pop()
 
             let filePath = file.name
-            if(parent) {
+            if (parent) {
                 filePath = parent.path + '\\' + file.name
             }
             const dbFile = new File({
@@ -131,7 +129,20 @@ class FileController {
             return res.json({message: 'File was deleted'})
         } catch (e) {
             console.log(e)
-          return   res.status(400).json({message: "Dir is not empty"})
+            return res.status(400).json({message: "Dir is not empty"})
+        }
+    }
+
+
+    async searchFile(req, res) {
+        try {
+            const searchName = req.query.search
+            let  files = await File.find({user: req.user.id})
+            files = files.filter(file => file.name.includes(searchName))
+            return res.json(files)
+        } catch (e) {
+            console.log(e)
+            return res.status(400).json({message: "Search error"})
         }
     }
 
