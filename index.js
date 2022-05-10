@@ -7,13 +7,12 @@ const fileRouter = require('./routes/file.routes');
 const corsMiddleware = require('./middleware/cors.middleware');
 
 const app = express()
-
-
-const PORT = config.get('serverPort')
+const PORT = process.env.PORT || config.get('serverPort')
 
 app.use(fileUpLoad({}))
 app.use(corsMiddleware)
 app.use(express.json())
+app.use(express.static('static'))
 app.use('/api/auth', authRouter)
 app.use('/api/files', fileRouter)
 
