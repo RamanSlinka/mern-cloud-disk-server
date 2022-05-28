@@ -34,8 +34,8 @@ router.post('/registration',
             const user = new User({email, password: hashPassword})
 
             await user.save()
-            await  fileService.createDir(new File({user: user.id, name: ''}))
-             res.json({message: 'User was created'})
+            await fileService.createDir(new File({user: user.id, name: ''}))
+            res.json({message: 'User was created'})
 
         } catch (e) {
             console.log(e)
@@ -74,7 +74,7 @@ router.post('/login',
 
         } catch (e) {
             console.log(e)
-            res.send({message: 'Server error'})
+            res.status(500).send({message: 'Server error'})
         }
     })
 
@@ -82,7 +82,7 @@ router.post('/login',
 router.get('/auth', authMiddleware,
     async (req, res) => {
         try {
-const user = await User.findOne({_id: req.user.id})
+            const user = await User.findOne({_id: req.user.id})
 
             const token = jwt.sign({id: user.id}, config.get('secretKey'), {expiresIn: '1h'})
 
