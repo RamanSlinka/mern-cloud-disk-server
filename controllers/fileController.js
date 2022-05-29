@@ -121,7 +121,7 @@ class FileController {
 
     async deleteFile(req, res) {
         try {
-            const file = await File.findOne({_id: req.query.id, user: req.query.id})
+            const file = await File.findOne({_id: req.query.id, user: req.user.id})
             if (!file) {
                 return res.status(400).json({message: 'File not found'})
             }
@@ -151,7 +151,7 @@ class FileController {
     async uploadAvatar(req, res) {
         try {
             const file = req.files.file
-           // console.log(file)
+         // console.log(req.files)
             const user = await User.findById(req.user.id)
             const avatarName = Uuid.v4() + ".jpg"
             file.mv(config.get('staticPath') + "\\" + avatarName)
