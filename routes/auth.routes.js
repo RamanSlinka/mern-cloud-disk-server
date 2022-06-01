@@ -49,17 +49,14 @@ router.post('/login',
         try {
             const {email, password} = req.body
             const user = await User.findOne({email})
-
-            if(!user) {
-                return res.status(404).json({message: 'User not found'})
+            if (!user) {
+                return res.status(404).json({message: "User not found"})
             }
-
             const isPassValid = bcrypt.compareSync(password, user.password)
-            if(!isPassValid) {
-                return res.status(400).json({message: 'Invalid password'})
+            if (!isPassValid) {
+                return res.status(400).json({message: "Invalid password"})
             }
-
-            const token = jwt.sign({id: user.id}, config.get('secretKey'), {expiresIn: '1h'})
+            const token = jwt.sign({id: user.id}, config.get("secretKey"), {expiresIn: "1h"})
 
             return res.json({
                 token,
@@ -71,7 +68,6 @@ router.post('/login',
                     avatar: user.avatar
                 }
             })
-
         } catch (e) {
             console.log(e)
             res.status(500).send({message: 'Server error'})
@@ -83,17 +79,16 @@ router.get('/auth', authMiddleware,
     async (req, res) => {
         try {
             const user = await User.findOne({_id: req.user.id})
-
-            const token = jwt.sign({id: user.id}, config.get('secretKey'), {expiresIn: '1h'})
-
+            const token = jwt.sign({id: user.id}, config.get("secretKey"), {expiresIn: "1h"})
             return res.json({
                 token,
                 user: {
                     id: user.id,
+                    avatar: user.avatar,
                     email: user.email,
                     diskSpace: user.diskSpace,
                     usedSpace: user.usedSpace,
-                    avatar: user.avatar
+
                 }
             })
         } catch (e) {
