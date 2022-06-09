@@ -7,12 +7,12 @@ const fileRouter = require('./routes/file.routes');
 // const corsMiddleware = require('./middleware/cors.middleware');
 const cors = require('cors');
 const filePathMiddleware = require('./middleware/filePath.middleware');
-const path = require('path')
+const path = require('path');
 
 const app = express()
 const PORT = process.env.PORT || config.get('serverPort')
 
-app.use(filePathMiddleware(path.response(__dirname, 'files')))
+app.use(filePathMiddleware(path.resolve(__dirname, 'file')))
 app.use(fileUpLoad([]))
 app.use(cors())
 app.use(express.json())
